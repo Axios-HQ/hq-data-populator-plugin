@@ -30,7 +30,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://editor-stage.axioshq.dev/*"],
+      "matches": ["*://*.axioshq.dev/*"],
       "js": ["content.js"]
     }
   ],
