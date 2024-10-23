@@ -65,14 +65,11 @@ export const postData = async (route, data) => {
       console.warn('Error details:', responseData);
       // Return the full error response
       return {
-        error: true,
         status: response.status,
         data: responseData
       };
     }
-
     return {
-      error: false,
       status: response.status,
       data: responseData
     };
