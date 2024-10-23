@@ -366,3 +366,56 @@ select:focus,
   border: 2px solid var(--vscode-dropdown-bg);
   border-radius: 4px;
 }
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 40px; /* Adjust this value to place the spinner further down */
+  height: 100%;
+}
+
+/* JSON Response Styling */
+.response-content {
+  background-color: #272822; /* Monokai background */
+  color: #f8f8f2; /* Default text color */
+  padding: 16px;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+/* JSON Response Styling */
+.response-content {
+  background-color: #272822; /* Monokai background */
+  color: #f8f8f2; /* Default text color */
+  padding: 16px;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+/* Syntax Highlighting for JSON */
+.response-content .key {
+  color: #f92672; /* Pink for keys */
+}
+
+.response-content .string {
+  color: #a6e22e; /* Green for strings */
+}
+
+.response-content .number {
+  color: #ae81ff; /* Purple for numbers */
+}
+
+.response-content .boolean {
+  color: #66d9ef; /* Light blue for booleans */
+}
+
+.response-content .null {
+  color: #fd971f; /* Orange for null */
+}

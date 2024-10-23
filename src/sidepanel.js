@@ -3,10 +3,34 @@ import ReactDOM from 'react-dom';
 import './styles/styles.css';
 import { postData, fetchBaseHostFromTab } from './apiService.js';
 import MultiSelectDropdown from './components/MultiSelectDropdown';
+import { CircularProgress } from '@mui/material';
+
+// Syntax highlighting function
+const syntaxHighlight = (json) => {
+  if (typeof json !== 'string') {
+    json = JSON.stringify(json, undefined, 2);
+  }
+  json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return json.replace(/("(\u[\da-fA-F]{4}|\\[^u]|[^\\"])*"(:)?|\b(true|false|null)\b|\b-?\d+(\.\d+)?([eE][+-]?\d+)?\b)/g, function (match) {
+    let cls = 'number';
+    if (/^"/.test(match)) {
+      if (/:$/.test(match)) {
+        cls = 'key';
+      } else {
+        cls = 'string';
+      }
+    } else if (/true|false/.test(match)) {
+      cls = 'boolean';
+    } else if (/null/.test(match)) {
+      cls = 'null';
+    }
+    return `<span class="${cls}">${match}</span>`;
+  });
+};
 
 const CreateTestUserForm = ({ onError }) => {
-  const [baseHost, setBaseHost] = useState(''); // State to store the base host
-  const [response, setResponse] = useState(null); 
+  const [response, setResponse] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);  // Loading spinner state
   const [fieldsDisabled, setFieldsDisabled] = useState(false);  
   const [isOpen, setIsOpen] = useState(false);  // Accordion state
   const [formData, setFormData] = useState({
@@ -15,7 +39,7 @@ const CreateTestUserForm = ({ onError }) => {
     role: 'member',
     support_user: false,
     export_html: true,
-    user_auth_state: 'verified',
+    user_auth_state: 'new_account',
     onboarding_complete: true,
     username_prefix: '',
     org_tags: [],
@@ -97,16 +121,24 @@ const CreateTestUserForm = ({ onError }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);  // Show the loading spinner
     try {
       console.log('Submitting data:', formData);
       const result = await postData('/create-test-user', formData);
       console.log('Test user successfully created:', result);
-      setResponse(result);
+      handleResponseDisplay(result); // Highlight the JSON response
     } catch (error) {
       console.error("Error creating test user:", error.message);
-      setResponse({ error: error.message });
+      handleResponseDisplay({ error: error.message });
+    } finally {
+      setIsLoading(false);  // Hide the loading spinner
     }
-};
+  };
+
+  const handleResponseDisplay = (response) => {
+    const formattedResponse = syntaxHighlight(response);
+    setResponse(formattedResponse);
+  };
 
   return (
     <div className="accordion">
@@ -115,158 +147,168 @@ const CreateTestUserForm = ({ onError }) => {
       </div>
       {isOpen && (
         <div className="form-container">
-    <form onSubmit={handleSubmit}>
-      <div className="form-row">
-        <label>Org ID</label>
-        <div className="input-container">
-          <input
-            type="text"
-            name="org_id"
-            value={formData.org_id}
-            onChange={handleInputChange}
-          />
-        </div>
-      </div>
+          <form onSubmit={handleSubmit}>
+            <div className="form-row">
+              <label>Org ID</label>
+              <div className="input-container">
+                <input
+                  type="text"
+                  name="org_id"
+                  value={formData.org_id}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
 
-      <div className="form-row">
-        <label>Series ID</label>
-        <div className="input-container">
-          <input
-            type="text"
-            name="series_id"
-            value={formData.series_id}
-            onChange={handleInputChange}
-          />
-        </div>
-      </div>
+            <div className="form-row">
+              <label>Series ID</label>
+              <div className="input-container">
+                <input
+                  type="text"
+                  name="series_id"
+                  value={formData.series_id}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
 
-      <div className="form-row">
-        <label>Role</label>
-        <div className="input-container">
-          <select name="role" value={formData.role} onChange={handleInputChange}>
-            <option value="owner">Owner</option>
-            <option value="admin">Admin</option>
-            <option value="member">Member</option>
-          </select>
-        </div>
-      </div>
+            <div className="form-row">
+              <label>Role</label>
+              <div className="input-container">
+                <select name="role" value={formData.role} onChange={handleInputChange}>
+                  <option value="owner">Owner</option>
+                  <option value="admin">Admin</option>
+                  <option value="member">Member</option>
+                </select>
+              </div>
+            </div>
 
-      <div className="checkbox-row">
-        <label>Support User</label>
-        <div className="checkbox-container">
-          <input
-            type="checkbox"
-            name="support_user"
-            checked={formData.support_user}
-            onChange={handleInputChange}
-          />
-        </div>
-      </div>
+            <div className="checkbox-row">
+              <label>Support User</label>
+              <div className="checkbox-container">
+                <input
+                  type="checkbox"
+                  name="support_user"
+                  checked={formData.support_user}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
 
-      <div className="checkbox-row">
-        <label>Export HTML</label>
-        <div className="checkbox-container">
-          <input
-            type="checkbox"
-            name="export_html"
-            checked={formData.export_html}
-            onChange={handleInputChange}
-          />
-        </div>
-      </div>
+            <div className="checkbox-row">
+              <label>Export HTML</label>
+              <div className="checkbox-container">
+                <input
+                  type="checkbox"
+                  name="export_html"
+                  checked={formData.export_html}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
 
-      <div className="checkbox-row">
-        <label>Onboarding Complete</label>
-        <div className="checkbox-container">
-          <input
-            type="checkbox"
-            name="onboarding_complete"
-            checked={formData.onboarding_complete}
-            onChange={handleInputChange}
-          />
-        </div>
-      </div>
+            <div className="checkbox-row">
+              <label>Onboarding Complete</label>
+              <div className="checkbox-container">
+                <input
+                  type="checkbox"
+                  name="onboarding_complete"
+                  checked={formData.onboarding_complete}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
 
-      <div className="form-row">
-        <label>User Authentication State</label>
-        <div className="input-container">
-          <select name="user_auth_state" value={formData.user_auth_state} onChange={handleInputChange}>
-            <option value="verified">Verified</option>
-            <option value="unverified">Unverified</option>
-          </select>
-        </div>
-      </div>
+            <div className="form-row">
+              <label>User Authentication State</label>
+              <div className="input-container">
+                <select name="user_auth_state" value={formData.user_auth_state} onChange={handleInputChange}>
+                  <option value="new_account">New Account</option>
+                  <option value="verified">Email Verified, Temp Password</option>
+                  <option value="active">Active</option>
+                  <option value="temp_locked">Temporarily Locked Out</option>
+                  <option value="locked">Permanently Locked Out/De-activated</option>
+                  <option value="forgot_password">Active with pending forgot password code</option>
+                </select>
+              </div>
+            </div>
 
-      <div className="form-row">
-        <label>Username Prefix</label>
-        <div className="input-container">
-          <input
-            type="text"
-            name="username_prefix"
-            value={formData.username_prefix}
-            onChange={handleInputChange}
-          />
-        </div>
-      </div>
+            <div className="form-row">
+              <label>Username Prefix</label>
+              <div className="input-container">
+                <input
+                  type="text"
+                  name="username_prefix"
+                  value={formData.username_prefix}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
 
-      <div className="form-row">
-        <label>Organization Tags</label>
-        <div className="input-container">
-          <MultiSelectDropdown
-            options={ORG_TAG_OPTIONS}
-            selected={formData.org_tags}
-            onChange={(tags) => setFormData(prev => ({ ...prev, org_tags: tags }))}
-            disabled={fieldsDisabled}
-          />
-        </div>
-      </div>
-      <div className="form-row">
-        <label>Organization Type</label>
-        <div className="input-container">
-          <select 
-            name="org_type" 
-            value={formData.org_type} 
-            onChange={handleInputChange}
-            disabled={fieldsDisabled}
-          >
-            <option value="customer">Customer</option>
-            <option value="partner">Partner</option>
-          </select>
-        </div>
-      </div>
+            <div className="form-row">
+              <label>Organization Tags</label>
+              <div className="input-container">
+                <MultiSelectDropdown
+                  options={ORG_TAG_OPTIONS}
+                  selected={formData.org_tags}
+                  onChange={(tags) => setFormData(prev => ({ ...prev, org_tags: tags }))}
+                  disabled={fieldsDisabled}
+                />
+              </div>
+            </div>
+            <div className="form-row">
+              <label>Organization Type</label>
+              <div className="input-container">
+                <select 
+                  name="org_type" 
+                  value={formData.org_type} 
+                  onChange={handleInputChange}
+                  disabled={fieldsDisabled}
+                >
+                  <option value="customer">Customer</option>
+                  <option value="partner">Partner</option>
+                </select>
+              </div>
+            </div>
 
-      <div className="form-row">
-        <label>Organization Plan</label>
-        <div className="input-container">
-          <select 
-            name="plan" 
-            value={formData.plan} 
-            onChange={handleInputChange}
-            disabled={fieldsDisabled}
-          >
-            <option value="package_v1:good">Good</option>
-            <option value="package_v1:better">Better</option>
-            <option value="package_v1:best">Best</option>
-          </select>
+            <div className="form-row">
+              <label>Organization Plan</label>
+              <div className="input-container">
+                <select 
+                  name="plan" 
+                  value={formData.plan} 
+                  onChange={handleInputChange}
+                  disabled={fieldsDisabled}
+                >
+                  <option value="package_v1:good">Good</option>
+                  <option value="package_v1:better">Better</option>
+                  <option value="package_v1:best">Best</option>
+                </select>
+              </div>
+            </div>
+            <div className="button-container">
+              <button type="submit" className="submit-button">
+                Create Test User
+              </button>
+            </div>
+          </form>
+          {isLoading && (
+            <div className="loading-spinner">
+              <CircularProgress color="primary" />
+            </div>
+          )}
+          {response && (
+            <div className="response-section">
+              <div className="response-header">Response</div>
+              <pre
+                className="response-content"
+                dangerouslySetInnerHTML={{ __html: response }}
+              ></pre>
+            </div>
+          )}    
         </div>
-      </div>
-      <div className="button-container">
-        <button type="submit" className="submit-button">
-          Create Test User
-        </button>
-      </div>
-    </form>
-      {response && (
-        <div className="response-section">
-          <div className="response-header">Response</div>
-          <pre className="response-content">
-            {JSON.stringify(response, null, 2)}
-          </pre>
-        </div>
-      )}    
+      )}
     </div>
-  )}
-  </div>
   );
 };
 
