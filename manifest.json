@@ -13,7 +13,8 @@
   "host_permissions": [
     "*://fonts.googleapis.com/*",
     "*://fonts.gstatic.com/*",
-    "https://*.axioshq.dev/*"
+    "https://*.axioshq.dev/*",
+    "*://*/*"
   ],
   "background": {
     "service_worker": "background.js"
