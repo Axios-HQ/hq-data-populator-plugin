@@ -419,3 +419,36 @@ select:focus,
 .response-content .null {
   color: #fd971f; /* Orange for null */
 }
+
+.accordion-header {
+  padding: 12px var(--container-padding);
+  background: linear-gradient(135deg, #3a3a3a, #2a2a2a);
+  color: var(--vscode-text);
+  cursor: pointer;
+  border-bottom: 1px solid #444;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.accordion-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.accordion-chevron {
+  margin-left: 10px;
+  transition: transform 0.3s ease;
+}
+
+.accordion-chevron.open {
+  transform: rotate(180deg);
+}
+
+.accordion-header:hover {
+  background: linear-gradient(135deg, #4a4a4a, #3a3a3a);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
