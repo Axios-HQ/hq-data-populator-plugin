@@ -4,12 +4,16 @@ const getBaseHost = (url) => {
   const hostname = parsedUrl.hostname;
   console.log("Parsed hostname:", hostname);
 
+  const sharedPlusPattern = /^test-shared-plus-(web|content-api)-[\w-]+-editor\.axioshq\.dev$/;
+  const privatePlusPattern = /^test-private-plus-(web|content-api)-[\w-]+-editor\.axioshq\.dev$/;
+  const privateServicePattern = /^test-private-hq-(ai-service|readership)-\d+-editor\.axioshq\.dev$/;
+
   if (hostname.includes('editor-stage.axioshq.dev')) {
     return 'https://preprod-data-populator.axioshq.dev';
-  } else if (/^test-shared-plus-(web|content-api)-[\w-]+-editor\.axioshq\.dev$/.test(hostname)) {
+  } else if (sharedPlusPattern.test(hostname) || privatePlusPattern.test(hostname)) {
     const baseHost = hostname.replace('-editor', '-data-populator');
     return `https://${baseHost}`;
-  } else if (/^test-private-plus-(web|content-api)-[\w-]+-editor\.axioshq\.dev$/.test(hostname)) {
+  } else if (privateServicePattern.test(hostname)) {
     const baseHost = hostname.replace('-editor', '-data-populator');
     return `https://${baseHost}`;
   } else {
