@@ -23,12 +23,6 @@ Thumbs.db
 *.temp
 *.swp
 
-# Ignore compiled files
-*.css
-*.css.map
-*.js
-*.js.map
-
 # Ignore coverage reports
 coverage/
 
