@@ -95,9 +95,6 @@ const CreateSeriesForm = ({ onError }) => {
     e.preventDefault();
     setIsLoading(true);  // Show the loading spinner
     try {
-      // Log the access token before submitting
-      console.log('Access Token on Submit:', formData.accessToken);
-      
       if (!formData.accessToken) {
         throw new Error("Access token is missing.");
       }
