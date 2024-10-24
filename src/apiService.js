@@ -60,10 +60,7 @@ export const postData = async (route, data) => {
 
     // Check if accessToken exists in data and add it to headers
     if (data.accessToken) {
-      headers['Authorization'] = 'Bearer 277ZaSSxqTHQltKfaQXQmJ5Y3m8KQJ';
-      // headers['Authorization'] = `Bearer ${data.accessToken}`; // Common format for bearer tokens
-      // Optionally, you can delete accessToken from data if not needed 
-      // delete data.access_token; // Clean up data to avoid sending it in the body
+      headers['Authorization'] = `Bearer ${data.accessToken}`;
     }
 
     const response = await fetch(url, {
