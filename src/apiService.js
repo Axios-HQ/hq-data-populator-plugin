@@ -53,11 +53,22 @@ export const postData = async (route, data) => {
     console.log('Making request to:', url);
     console.log('With data:', data);
 
+    // Prepare headers
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    // Check if accessToken exists in data and add it to headers
+    if (data.accessToken) {
+      headers['Authorization'] = 'Bearer 277ZaSSxqTHQltKfaQXQmJ5Y3m8KQJ';
+      // headers['Authorization'] = `Bearer ${data.accessToken}`; // Common format for bearer tokens
+      // Optionally, you can delete accessToken from data if not needed 
+      // delete data.access_token; // Clean up data to avoid sending it in the body
+    }
+
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: headers,
       body: JSON.stringify(data),
     });
 

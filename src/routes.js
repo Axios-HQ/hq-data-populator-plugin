@@ -13,6 +13,7 @@ export const routes = {
   createEdition: `${base_host}/create-edition`,
   healthcheck: `${base_host}/healthcheck`,
   createTemplate: `${base_host}/create-template`,
+  createSeries: `${base_host}/create-series`,
 };
 
 export default routes;
