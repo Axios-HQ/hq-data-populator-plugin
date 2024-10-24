@@ -18,7 +18,8 @@ const getBaseHost = (url) => {
     const baseHost = hostname.replace('-editor', '-data-populator');
     return `https://${baseHost}`;
   } else if (dataPopulatorPattern.test(hostname)) {
-    return `https://${hostname}`;
+    const baseHost = hostname.replace('-editor', '-data-populator');
+    return `https://${baseHost}`;
   } else {
     console.warn('Unknown environment, returning default base_host');
     return 'https://default-base-host.com';
