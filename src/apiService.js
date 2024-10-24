@@ -53,11 +53,19 @@ export const postData = async (route, data) => {
     console.log('Making request to:', url);
     console.log('With data:', data);
 
+    // Prepare headers
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    // Check if accessToken exists in data and add it to headers
+    if (data.accessToken) {
+      headers['Authorization'] = `Bearer ${data.accessToken}`;
+    }
+
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: headers,
       body: JSON.stringify(data),
     });
 

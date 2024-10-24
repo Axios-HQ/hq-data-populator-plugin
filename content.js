@@ -30,10 +30,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     try {
       const analyticsQa = safeGetStorage('analytics-qa');
       const lastSeriesId = safeGetStorage('last_series_id');
-      
+      const accessToken = safeGetStorage('accessToken');
+
       console.group('Local Storage Values');
       console.log('analytics-qa:', analyticsQa);
       console.log('last_series_id:', lastSeriesId);
+      console.log('accessToken:', accessToken);
       console.groupEnd();
 
       let localStorageValues = {
@@ -41,7 +43,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         user_email: '',
         organization_id: '',
         timestamp: new Date().toISOString(),
-        source_url: window.location.href
+        source_url: window.location.href,
+        accessToken: accessToken || '' 
       };
 
       const parsedAnalytics = safeJsonParse(analyticsQa);
