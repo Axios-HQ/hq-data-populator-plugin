@@ -31,7 +31,8 @@ const CreateSeriesForm = ({ onError }) => {
   const [isOpen, setIsOpen] = useState(false);  // Accordion state
   const [formData, setFormData] = useState({
     org_id: '',
-    series_name: '',
+    name: '',
+    series_count: 1,
     accessToken: ''
   });
   
@@ -144,10 +145,57 @@ const CreateSeriesForm = ({ onError }) => {
               <div className="input-container">
                 <input
                   type="text"
-                  name="series_name"
-                  value={formData.series_name}
+                  name="name"
+                  value={formData.name}
                   onChange={handleInputChange}
                 />
+              </div>
+            </div>
+
+            <div className="form-row" style={{ justifyContent: 'center', display: 'flex', alignItems: 'center' }}>
+              <label style={{ marginRight: '80px' }}>Series Count</label>
+              <div className="input-container" style={{ display: 'flex', alignItems: 'center' }}>
+                <button
+                  type="button"
+                  style={{
+                    padding: '3px 8px',
+                    fontSize: '12px',
+                    backgroundColor: '#333',
+                    color: '#fff',
+                    border: '1px solid #444',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    marginRight: '10px'  // Add spacing between button and counter
+                  }}
+                  onClick={() => setFormData(prevData => ({
+                    ...prevData,
+                    series_count: Math.max((prevData.series_count || 0) - 1, 0)
+                  }))}
+                >
+                  -
+                </button>
+                <span style={{ padding: '0 10px', fontSize: '14px', color: '#fff' }}>
+                  {formData.series_count || 0}
+                </span>
+                <button
+                  type="button"
+                  style={{
+                    padding: '3px 8px',
+                    fontSize: '12px',
+                    backgroundColor: '#333',
+                    color: '#fff',
+                    border: '1px solid #444',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    marginLeft: '10px'  // Add spacing between button and counter
+                  }}
+                  onClick={() => setFormData(prevData => ({
+                    ...prevData,
+                    series_count: Math.min((prevData.series_count || 0) + 1, 10)
+                  }))}
+                >
+                  +
+                </button>
               </div>
             </div>
 
